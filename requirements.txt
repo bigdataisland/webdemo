@@ -1,1 +1,3 @@
+pandas==1.1.3
 yfinance==0.1.55
+scikit_learn==0.24.0

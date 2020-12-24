@@ -133,6 +133,11 @@ def main():
     session = sessions[session_id_key]
     st.write(session.ws.request.remote_ip)
 
+    st.write(session.ws.request.headers)
+    st.write(session.ws.request.uri)
+    st.write(session.ws.request.host_name)
+    st.write(session.ws.request.host)
+
     if session.ws.request.remote_ip == '::1':
         ip = session.ws.request.remote_ip
     else:

@@ -133,6 +133,7 @@ def main():
     session = sessions[session_id_key]
     st.write(session.ws.request.remote_ip)
 
+    st.write(session.ws.request.headers)
     st.write(session.ws.request.headers['X-Forwarded-For'])
     st.write(session.ws.request.uri)
     st.write(session.ws.request.host_name)

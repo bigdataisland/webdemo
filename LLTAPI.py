@@ -107,15 +107,15 @@ def main():
     #page = st.sidebar.radio("Select your page", tuple(pages.keys()))
 
     #ip = st.request.remote_ip
-    url = 'http://ipinfo.io/json'
-    response = request.urlopen(url)
-    data = json.load(response)
+    # url = 'http://ipinfo.io/json'
+    # response = request.urlopen(url)
+    # data = json.load(response)
+    #
+    # st.write(data)
 
-    st.write(data)
-
-    ctx = get_report_ctx()
-    id = ctx.session_id
-    st.write(ctx.session_id)
+    # ctx = get_report_ctx()
+    # id = ctx.session_id
+    # st.write(ctx.session_id)
     # for key, val in ctx.items():
     #     st.write(key)
     #     st.write(key)

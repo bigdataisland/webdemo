@@ -6,6 +6,8 @@ from geopy.extra.rate_limiter import RateLimiter
 
 from streamlit.server.server import Server
 
+
+
 import ipinfo
 import json
 from urllib import request
@@ -147,6 +149,17 @@ def main():
 
     st.write(ip)
 
+    access_token = 'cbacbcd0adb278'
+    handler = ipinfo.getHandler(access_token)
+    ip_address = '123.59.195.125'
+    details = handler.getDetails(ip_address)
+    st.write(details.all)
+
+    ip_address = ip
+    details = handler.getDetails(ip_address)
+    st.write(details.all)
+
+
     #st.write("URL PARAM:" + str(urlpara))
     #get_headers()
 
@@ -189,6 +202,7 @@ if __name__ == "__main__":
     main()
 
 # Streamlit - Settings page with session state
+# https://stackoverflow.com/questions/24678308/how-to-find-location-with-ip-address-in-python
 # https://gist.github.com/okld/0aba4869ba6fdc8d49132e6974e2e662
 
 # https://gist.github.com/tvst/036da038ab3e999a64497f42de966a92

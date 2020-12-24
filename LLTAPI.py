@@ -125,6 +125,22 @@ def main():
 
     st.write(Server)
 
+    # if len(ssession.ws.request.headers['X-Forwarded-For'].split(',')[0]) > 0:
+    #     ip = '69.158.134.166'
+    # else:
+
+
+
+    #st.write("URL PARAM:" + str(urlpara))
+    #get_headers()
+
+    # Display the selected page with the session state
+    pages[page]()
+
+
+def page_first():
+    st.title("This is my first page")
+    # ...
 
     session_state = get(remote_ip='', favorite_color='black')
 
@@ -142,9 +158,6 @@ def main():
     st.write(session.ws.request.host)
     st.write(session.ws.request.host)
 
-    # if len(ssession.ws.request.headers['X-Forwarded-For'].split(',')[0]) > 0:
-    #     ip = '69.158.134.166'
-    # else:
     ip = session.ws.request.headers['X-Forwarded-For'].split(',')[0]
 
     st.write(ip)
@@ -155,21 +168,33 @@ def main():
     details = handler.getDetails(ip_address)
     st.write(details.all)
 
+    access_token = 'cbacbcd0adb278'
+    handler = ipinfo.getHandler(access_token)
     ip_address = ip
     details = handler.getDetails(ip_address)
     st.write(details.all)
 
+    street = st.sidebar.text_input("Street", '1')
+    city = st.sidebar.text_input("City", details.city)
+    province = st.sidebar.text_input("Province", details.region)
+    country = st.sidebar.text_input("Country", details.country_name)
 
-    #st.write("URL PARAM:" + str(urlpara))
-    #get_headers()
+    lat = float(details.latitude)
+    lon = float(details.longitude)
 
-    # Display the selected page with the session state
-    pages[page]()
+    st.write('lat: ' + str(lat))
+    st.write('lon: ' + str(lon))
+
+    map_data = pd.DataFrame({'lat': [lat], 'lon': [lon]})
+
+    # st.map(map_data)
+    st.map(map_data, zoom=12)
 
 
-def page_first():
-    st.title("This is my first page")
+def page_second():
+    st.title("This is my second page")
     # ...
+
     street = st.sidebar.text_input("Street", "75 Bay Street")
     city = st.sidebar.text_input("City", "Toronto")
     province = st.sidebar.text_input("Province", "Ontario")
@@ -193,9 +218,6 @@ def page_first():
     st.map(map_data, zoom=12)
 
 
-def page_second():
-    st.title("This is my second page")
-    # ...
 
 
 if __name__ == "__main__":

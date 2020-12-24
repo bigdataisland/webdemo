@@ -140,10 +140,10 @@ def main():
     st.write(session.ws.request.host)
     st.write(session.ws.request.host)
 
-    if len(ssession.ws.request.headers['X-Forwarded-For'].split(',')[0]) > 0:
-        ip = '69.158.134.166'
-    else:
-        ip = session.ws.request.headers['X-Forwarded-For'].split(',')[0]
+    # if len(ssession.ws.request.headers['X-Forwarded-For'].split(',')[0]) > 0:
+    #     ip = '69.158.134.166'
+    # else:
+    ip = session.ws.request.headers['X-Forwarded-For'].split(',')[0]
 
     st.write(ip)
 

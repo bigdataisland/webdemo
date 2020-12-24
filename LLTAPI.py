@@ -138,11 +138,12 @@ def main():
     st.write(session.ws.request.uri)
     st.write(session.ws.request.host_name)
     st.write(session.ws.request.host)
+    st.write(session.ws.request.host)
 
-    if session.ws.request.remote_ip == '::1':
-        ip = session.ws.request.remote_ip
-    else:
+    if session.ws.request.remote_ip == '127.0.0.1':
         ip = '69.158.134.166'
+    else:
+        ip = [session.ws.request.headers['X-Forwarded-For']][0]
 
     st.write(ip)
 

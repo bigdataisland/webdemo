@@ -134,7 +134,7 @@ def main():
     st.write(session.ws.request.remote_ip)
 
     st.write(session.ws.request.headers)
-    st.write(session.ws.request.headers['X-Forwarded-For'])
+    st.write([session.ws.request.headers['X-Forwarded-For']][0])
     st.write(session.ws.request.uri)
     st.write(session.ws.request.host_name)
     st.write(session.ws.request.host)

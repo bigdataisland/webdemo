@@ -1,36 +1,16 @@
-from streamlit.report_thread import get_report_ctx
 import streamlit as st
 import pandas as pd
+import ipinfo
+from streamlit.report_thread import get_report_ctx
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
-
 from streamlit.server.server import Server
 
+from datetime import datetime, timedelta
+from pytz import timezone
+import pytz
 
-
-import ipinfo
-import json
-from urllib import request
-
-
-def get_headers():
-    # Hack to get the session object from Streamlit.
-
-    current_server = Server.get_current()
-    if hasattr(current_server, '_session_infos'):
-        # Streamlit < 0.56
-        session_infos = Server.get_current()._session_infos.values()
-    else:
-        session_infos = Server.get_current()._session_info_by_id.values()
-
-    st.write('test')
-
-
-    # Multiple Session Objects?
-    for session_info in session_infos:
-        headers = session_info.ws.request.headers
-        st.write(headers)
-#    return headers
+from tzwhere import tzwhere
 
 class SessionState(object):
     def __init__(self, **kwargs):
@@ -98,14 +78,23 @@ def get(**kwargs):
 def main():
     # Register your pages
     pages = {
-        "First page": page_first,
-        "Second page": page_second,
+        "Home page": page_first,
+        "Update Address": page_second,
     }
 
-    st.sidebar.title("App with pages")
+    st.title("Pre-interview Code Submission ")
+
+    st.markdown("""
+    This app performs simple test For Accuenergy.com
+    * **Libraries:** base64, pandas, streamlit, Javascript, IPInfo
+    * **Source Code:** [Lionel Luo @github.com](https://github.com/bigdataisland/webdemo/blob/main/LLTAPI.py).
+    """)
+
+
+    st.sidebar.title("Search Address")
 
     # Widget to select your page, you can choose between radio buttons or a selectbox
-    page = st.sidebar.selectbox("Select your page", tuple(pages.keys()))
+    #page = st.sidebar.selectbox("Please Select Action", tuple(pages.keys()))
     #page = st.sidebar.radio("Select your page", tuple(pages.keys()))
 
     #ip = st.request.remote_ip
@@ -123,7 +112,7 @@ def main():
     #     st.write(key)
 
 
-    st.write(Server)
+    #st.write(Server)
 
     # if len(ssession.ws.request.headers['X-Forwarded-For'].split(',')[0]) > 0:
     #     ip = '69.158.134.166'
@@ -134,8 +123,121 @@ def main():
     #st.write("URL PARAM:" + str(urlpara))
     #get_headers()
 
-    # Display the selected page with the session state
-    pages[page]()
+    # st.write('Test')
+    # st.write(st.sidebar.text_input())
+    # st.write(page)
+    # # Display the selected page with the session state
+    # pages[page]()
+
+    #st.write(st.sidebar.text("Street").value)
+
+    sessions = Server.get_current()._session_info_by_id
+    session_id_key = list(sessions.keys())[0]
+    session = sessions[session_id_key]
+    # st.write(session.ws.request.remote_ip)
+
+    # st.write(session.ws.request.headers)
+    # st.write(session.ws.request.headers['X-Forwarded-For'].split(',')[0])
+    # st.write(session.ws.request.uri)
+    # st.write(session.ws.request.host_name)
+    # st.write(session.ws.request.host)
+    # st.write(session.ws.request.host)
+
+    if session.ws.request.remote_ip == '127.0.0.1':
+        ip = session.ws.request.headers['X-Forwarded-For'].split(',')[0]
+    else:
+        ip = '123.59.195.125'
+
+    # st.write(ip)
+
+    # access_token = 'cbacbcd0adb278'
+    # handler = ipinfo.getHandler(access_token)
+    # ip_address = '123.59.195.125'
+    # details = handler.getDetails(ip_address)
+    # st.write(details.all)
+
+    access_token = 'cbacbcd0adb278'
+    handler = ipinfo.getHandler(access_token)
+    ip_address = ip
+    details = handler.getDetails(ip_address)
+
+    # st.write(details.all)
+
+    my_street = ""
+    my_city = details.city
+    my_province = details.region
+    my_country = details.country_name
+
+    street = st.sidebar.text_input("Street", my_street)
+    city = st.sidebar.text_input("City", my_city)
+    province = st.sidebar.text_input("Province", my_province)
+    country = st.sidebar.text_input("Country", my_country)
+
+    if st.sidebar.button('Updatae'):
+        pass
+    else:
+        pass
+
+
+    # st.sidebar.button('Updatae')
+
+    # lat = float(details.latitude)
+    # lon = float(details.longitude)
+    #
+    # st.write('lat: ' + str(lat))
+    # st.write('lon: ' + str(lon))
+    #
+    # map_data = pd.DataFrame({'lat': [lat], 'lon': [lon]})
+    #
+    # # st.map(map_data)
+    # st.map(map_data, zoom=12)
+
+    geolocator = Nominatim(user_agent="GTA Lookup")
+    geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+    location = geolocator.geocode(street + ", " + city + ", " + province + ", " + country)
+
+    st.write(location)
+
+    lat = location.latitude
+    lon = location.longitude
+
+
+    tz = tzwhere.tzwhere()
+    tz_name = tz.tzNameAt(lat, lon)
+
+    # st.write('Timezone: ' + tz_name)
+    # st.write('Latitude: ' + str(lat))
+    # st.write('Longitude: ' + str(lon))
+
+    st.write('Display Time')
+    utc = pytz.utc
+    # utc.zone
+    # 'UTC'
+    utc_today = datetime.now(utc)
+
+
+    timestamp = utc_today.timestamp()
+    #st.write('UTC Time : ' + str(utc_today))
+    #st.write('UTC Timestamp : ' + str(timestamp))
+
+    tz = pytz.timezone(tz_name)
+    local_today = datetime.now(tz)
+    #st.write('Local Time: ' + str(local_today))
+
+    st.markdown(f"Timezone: **{tz_name}**.")
+    st.markdown(f"UTC Timestamp: **{timestamp}**.")
+    st.markdown(f"Local Time: **{local_today}**.")
+
+
+    map_data = pd.DataFrame({'lat': [lat], 'lon': [lon]})
+    # st.map(map_data)
+
+    st.write('Display the location in map')
+    st.map(map_data, zoom=12)
+
+
+
+
 
 
 def page_first():
@@ -144,29 +246,30 @@ def page_first():
 
     session_state = get(remote_ip='', favorite_color='black')
 
-    st.write(session_state.remote_ip)
+    #st.write(session_state.remote_ip)
 
     sessions = Server.get_current()._session_info_by_id
     session_id_key = list(sessions.keys())[0]
     session = sessions[session_id_key]
-    st.write(session.ws.request.remote_ip)
+    #st.write(session.ws.request.remote_ip)
 
-    st.write(session.ws.request.headers)
-    st.write(session.ws.request.headers['X-Forwarded-For'].split(',')[0])
-    st.write(session.ws.request.uri)
-    st.write(session.ws.request.host_name)
-    st.write(session.ws.request.host)
-    st.write(session.ws.request.host)
+    #st.write(session.ws.request.headers)
+    #st.write(session.ws.request.headers['X-Forwarded-For'].split(',')[0])
+    #st.write(session.ws.request.uri)
+    #st.write(session.ws.request.host_name)
+    #st.write(session.ws.request.host)
+    #st.write(session.ws.request.host)
 
-    ip = session.ws.request.headers['X-Forwarded-For'].split(',')[0]
+    #ip = session.ws.request.headers['X-Forwarded-For'].split(',')[0]
+    ip = '123.59.195.125'
 
-    st.write(ip)
+    #st.write(ip)
 
-    access_token = 'cbacbcd0adb278'
-    handler = ipinfo.getHandler(access_token)
-    ip_address = '123.59.195.125'
-    details = handler.getDetails(ip_address)
-    st.write(details.all)
+    # access_token = 'cbacbcd0adb278'
+    # handler = ipinfo.getHandler(access_token)
+    # ip_address = '123.59.195.125'
+    # details = handler.getDetails(ip_address)
+    # st.write(details.all)
 
     access_token = 'cbacbcd0adb278'
     handler = ipinfo.getHandler(access_token)
@@ -178,6 +281,8 @@ def page_first():
     city = st.sidebar.text_input("City", details.city)
     province = st.sidebar.text_input("Province", details.region)
     country = st.sidebar.text_input("Country", details.country_name)
+
+    #st.sidebar.button('Updatae')
 
     lat = float(details.latitude)
     lon = float(details.longitude)
@@ -191,14 +296,27 @@ def page_first():
     st.map(map_data, zoom=12)
 
 
+
+
+
 def page_second():
     st.title("This is my second page")
     # ...
 
-    street = st.sidebar.text_input("Street", "75 Bay Street")
-    city = st.sidebar.text_input("City", "Toronto")
-    province = st.sidebar.text_input("Province", "Ontario")
-    country = st.sidebar.text_input("Country", "Canada")
+    # street = st.sidebar.text_input("Street", "75 Bay Street")
+    # city = st.sidebar.text_input("City", "Toronto")
+    # province = st.sidebar.text_input("Province", "Ontario")
+    # country = st.sidebar.text_input("Country", "Canada")
+
+    # street = st.sidebar.text("Street")
+    # city = st.sidebar.text("City")
+    # province = st.sidebar.text("Province")
+    # country = st.sidebar.text("Country")
+
+    street = st.sidebar.text_input("Street", "")
+    city = st.sidebar.text_input("City", "")
+    province = st.sidebar.text_input("Province", "")
+    country = st.sidebar.text_input("Country", "")
 
     geolocator = Nominatim(user_agent="GTA Lookup")
     geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)

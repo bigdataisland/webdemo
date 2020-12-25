@@ -1,1 +1,1 @@
-web: python LLTAPI.py runserver 0.0.0.0:5000
+web: streamlit run LLTAPI.py

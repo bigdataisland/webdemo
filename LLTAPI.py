@@ -1,3 +1,9 @@
+"""
+This app performs simple test for accuenergy.com
+    * **Libraries:** base64, pandas, streamlit, Javascript, IPInfo, Markdown
+    * **Source Code:** [Lionel Luo @github.com](https://github.com/bigdataisland/webdemo/blob/main/LLTAPI.py).
+"""
+
 import pytz
 import ipinfo
 import pandas as pd
@@ -33,11 +39,9 @@ class SessionState(object):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-
 @st.cache(allow_output_mutation=True)
 def get_session(id, **kwargs):
     return SessionState(**kwargs)
-
 
 def get(**kwargs):
     """Gets a SessionState object for the current session.
@@ -69,8 +73,6 @@ def get(**kwargs):
     ctx = get_report_ctx()
     id = ctx.session_id
     return get_session(id, **kwargs)
-
-
 
 def main():
     # Register your pages
@@ -126,7 +128,6 @@ def main():
 
     lat = location.latitude
     lon = location.longitude
-
 
     tz = tzwhere.tzwhere()
     tz_name = tz.tzNameAt(lat, lon)

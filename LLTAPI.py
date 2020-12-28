@@ -99,7 +99,7 @@ def main():
     else:
         ip = '123.59.195.125'
 
-    access_token = 'cbacbcd0adb278'
+    access_token = '32954095c41f7b'
     handler = ipinfo.getHandler(access_token)
     ip_address = ip
     details = handler.getDetails(ip_address)
@@ -170,8 +170,6 @@ def page_first():
 
     # Default IP
     ip = '123.59.195.125'
-    # access_token = 'cbacbcd0adb278'
-    # access_token = 'd81342eefe34e6'
     access_token = '32954095c41f7b'
     handler = ipinfo.getHandler(access_token)
     ip_address = ip

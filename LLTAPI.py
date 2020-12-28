@@ -129,23 +129,29 @@ def main():
     lat = location.latitude
     lon = location.longitude
 
+    st.markdown(f"**Time Information**")
+    st.markdown(f"Latitude: ***{lat}***")
+    st.markdown(f"Longitude: ***{lon}***")
+
     tz = tzwhere.tzwhere()
     tz_name = tz.tzNameAt(lat, lon)
 
-    st.markdown(f"**Time Information**")
-    utc = pytz.utc
+    if tz_name is None:
+        pass
+    else:
+        st.markdown(f"Timezone: ***{tz_name}***")
+        utc = pytz.utc
 
-    # 'UTC'
-    utc_today = datetime.now(utc)
+        # 'UTC'
+        utc_today = datetime.now(utc)
 
-    timestamp = utc_today.timestamp()
+        timestamp = utc_today.timestamp()
 
-    tz = pytz.timezone(tz_name)
-    local_today = datetime.now(tz)
+        tz = pytz.timezone(tz_name)
+        local_today = datetime.now(tz)
 
-    st.markdown(f"Timezone: ***{tz_name}***")
-    st.markdown(f"UTC Timestamp: ***{timestamp}***")
-    st.markdown(f"Local Time: ***{local_today}***")
+        st.markdown(f"UTC Timestamp: ***{timestamp}***")
+        st.markdown(f"Local Time: ***{local_today}***")
 
     map_data = pd.DataFrame({'lat': [lat], 'lon': [lon]})
 
@@ -164,7 +170,9 @@ def page_first():
 
     # Default IP
     ip = '123.59.195.125'
-    access_token = 'cbacbcd0adb278'
+    # access_token = 'cbacbcd0adb278'
+    # access_token = 'd81342eefe34e6'
+    access_token = '32954095c41f7b'
     handler = ipinfo.getHandler(access_token)
     ip_address = ip
     details = handler.getDetails(ip_address)
